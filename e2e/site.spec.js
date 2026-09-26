@@ -44,51 +44,6 @@ test('desktop navigation, member filters, profile modal and empty state', async 
   expect(errors).toEqual([]);
 });
 
-test('login gate, validation, journal filtering, preview, PDF download and logout', async ({ page }) => {
-  await page.goto('/jurnal');
-  await expect(page).toHaveURL(/\/login$/);
-  await page.getByRole('button', { name: 'Masuk ke Repositori' }).click();
-  await expect(page.getByText('Masukkan username atau email.', { exact: true })).toBeVisible();
-  await page.locator('#username').fill('wrong@');
-  await page.locator('#password').fill('incorrect-password');
-  await page.getByRole('button', { name: 'Masuk ke Repositori' }).click();
-  await expect(page.getByText('Format email belum valid.')).toBeVisible();
-  await page.locator('#username').fill('wrong');
-  await page.getByRole('button', { name: 'Masuk ke Repositori' }).click();
-  await expect(page.getByRole('alert')).toContainText('Username atau password belum sesuai');
-  await page.getByRole('button', { name: 'Gunakan akun demo' }).click();
-  await page.getByRole('button', { name: 'Tampilkan password' }).click();
-  await expect(page.locator('#password')).toHaveAttribute('type', 'text');
-  await page.getByRole('button', { name: 'Masuk ke Repositori' }).click();
-  await expect(page).toHaveURL(/\/jurnal$/);
-  await expect(page.locator('.journal-card')).toHaveCount(6);
-  await page.getByRole('button', { name: 'Hukum Perdata', exact: true }).click();
-  await expect(page.locator('.journal-card')).toHaveCount(2);
-  await page.getByRole('searchbox').fill('Nadya');
-  await expect(page.locator('.journal-card')).toHaveCount(1);
-  await page.getByRole('button', { name: 'Pratinjau', exact: true }).click();
-  await expect(page.getByRole('dialog')).toContainText('Perlindungan data pribadi');
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('dialog').getByRole('button', { name: 'Unduh PDF' }).click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('justitia-jurnal-2.pdf');
-  await download.saveAs('artifacts/jurnal-contoh.pdf');
-  await page.keyboard.press('Escape');
-  await page.reload();
-  await expect(page).toHaveURL(/\/jurnal$/);
-  await page.getByRole('button', { name: 'Keluar' }).click();
-  await expect(page).toHaveURL(/\/login$/);
-  await page.goto('/jurnal');
-  await expect(page).toHaveURL(/\/login$/);
-});
-
-test('expired sessions cannot access repository', async ({ page }) => {
-  await page.goto('/');
-  await page.evaluate(() => sessionStorage.setItem('justitia-session', JSON.stringify({ token: 'expired-demo', expires: Date.now() - 1000 })));
-  await page.goto('/jurnal');
-  await expect(page).toHaveURL(/\/login$/);
-});
-
 test('mobile navigation and pages fit viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const route of ['/', '/tentang', '/struktur', '/login']) {

@@ -31,20 +31,7 @@ export const members = [
   }))
 ];
 
-export const journals = [
-  { id: 1, title: 'Keadilan restoratif dalam perspektif pembaruan hukum pidana', category: 'Hukum Pidana', author: 'Aditya Pratama', date: '12 September 2026', pages: 1, abstract: 'Contoh naskah ini memperkenalkan gagasan pemulihan sebagai salah satu topik diskusi akademik hukum pidana. Pembahasan berfokus pada pertanyaan mengenai kepentingan korban, tanggung jawab pelaku, dan peran masyarakat. Materi ini disediakan untuk demonstrasi repositori dan bukan rujukan hukum atau hasil penelitian.' },
-  { id: 2, title: 'Perlindungan data pribadi di era ekonomi digital', category: 'Hukum Perdata', author: 'Nadya Putri', date: '8 September 2026', pages: 1, abstract: 'Contoh naskah diskusi tentang hubungan antara aktivitas digital, persetujuan pengguna, dan tanggung jawab pengelolaan data. Artikel demonstrasi ini mengajak pembaca mengidentifikasi isu perlindungan privasi dalam kehidupan sehari-hari. Materi ini bukan hasil penelitian atau nasihat hukum.' },
-  { id: 3, title: 'Konstitusi dan partisipasi warga dalam demokrasi', category: 'Hukum Tata Negara', author: 'Alya Maharani', date: '3 September 2026', pages: 1, abstract: 'Contoh bahan diskusi mengenai partisipasi warga dan gagasan konstitusionalisme. Naskah ini menyajikan pertanyaan awal untuk kegiatan belajar kelas mengenai hubungan masyarakat dengan lembaga negara. Seluruh isi merupakan materi demonstrasi, bukan penelitian atau rujukan hukum.' },
-  { id: 4, title: 'Diplomasi dan penyelesaian sengketa lintas negara', category: 'Hukum Internasional', author: 'Dimas Saputra', date: '28 Agustus 2026', pages: 1, abstract: 'Naskah demonstrasi untuk memantik diskusi tentang dialog, kerja sama, dan penyelesaian sengketa dalam hubungan internasional. Pembaca diajak memetakan pertanyaan penelitian yang relevan. Materi ini tidak memuat kesimpulan penelitian atau nasihat hukum.' },
-  { id: 5, title: 'Kesepakatan dan kepercayaan dalam kontrak digital', category: 'Hukum Perdata', author: 'Rizky Ramadhan', date: '21 Agustus 2026', pages: 1, abstract: 'Contoh naskah akademik mengenai pengalaman para pihak saat membuat kesepakatan secara digital. Pembahasan berupa pengantar diskusi kelas tentang kejelasan informasi dan harapan pengguna. Dokumen ini hanya untuk demonstrasi fitur repositori.' },
-  { id: 6, title: 'Ruang publik dan literasi konstitusi generasi muda', category: 'Hukum Tata Negara', author: 'Salsabila Zahra', date: '16 Agustus 2026', pages: 1, abstract: 'Contoh naskah untuk diskusi kelas mengenai pendidikan kewargaan dan literasi konstitusi. Artikel mengusulkan topik percakapan yang dapat dikembangkan menjadi kegiatan belajar bersama. Dokumen demonstrasi ini bukan publikasi ilmiah atau nasihat hukum.' }
-];
-
 export function filterMembers(query = '', division = 'Semua') {
   const term = query.trim().toLocaleLowerCase('id');
   return members.filter(m => (division === 'Semua' || m.division === division) && `${m.name} ${m.nim} ${m.role}`.toLocaleLowerCase('id').includes(term));
-}
-export function filterJournals(query = '', category = 'Semua') {
-  const term = query.trim().toLocaleLowerCase('id');
-  return journals.filter(j => (category === 'Semua' || j.category === category) && `${j.title} ${j.author}`.toLocaleLowerCase('id').includes(term));
 }

@@ -1,35 +1,36 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { filterMembers, filterJournals, journals } from '../public/data.js';
-import { createJournalPdf } from '../public/pdf.js';
+import { filterMembers } from '../src/data.js';
+import { filterJournalList, validateJournal, validateFile, MAX_FILE_SIZE, friendlyError } from '../src/journal-model.js';
 
-test('member search combines normalized query and division', () => {
+test('member filtering includes members as well as coordinators', () => {
   assert.equal(filterMembers('  NADYA ', 'Pengurus Inti')[0].name, 'Nadya Putri');
-  assert.equal(filterMembers('230101005', 'Akademik')[0].name, 'Dimas Saputra');
+  assert.equal(filterMembers('230101009', 'Anggota Kelas')[0].name, 'Bagas Wicaksono');
   assert.equal(filterMembers('nadya', 'Humas').length, 0);
-  assert.equal(filterMembers('no matching member').length, 0);
 });
-
-test('journal search supports title, author and category together', () => {
-  assert.equal(filterJournals(' DATA ', 'Hukum Perdata')[0].id, 2);
-  assert.equal(filterJournals('aditya', 'Hukum Pidana')[0].id, 1);
-  assert.equal(filterJournals('aditya', 'Hukum Perdata').length, 0);
-  assert.equal(filterJournals('', 'Hukum Tata Negara').length, 2);
+test('journal search combines title/author with category', () => {
+  const data = [{ title: 'Perlindungan data', author: 'Nadya', category: 'Hukum Perdata' }, { title: 'Konstitusi', author: 'Alya', category: 'Hukum Tata Negara' }];
+  assert.equal(filterJournalList(data, ' DATA ', 'Hukum Perdata').length, 1);
+  assert.equal(filterJournalList(data, 'nadya', 'Hukum Perdata').length, 1);
+  assert.equal(filterJournalList(data, 'nadya', 'Hukum Pidana').length, 0);
 });
-
-test('all downloadable PDFs contain real content and correct cross-reference offsets', async () => {
-  for (const journal of journals) {
-    const blob = createJournalPdf(journal);
-    assert.equal(blob.type, 'application/pdf');
-    const pdf = await blob.text();
-    assert.ok(pdf.startsWith('%PDF-1.4'));
-    assert.ok(pdf.endsWith('%%EOF\n'));
-    assert.ok(pdf.includes(journal.author));
-    const xref = Number(pdf.match(/startxref\n(\d+)/)[1]);
-    assert.equal(pdf.slice(xref, xref + 4), 'xref');
-    const offsets = [...pdf.matchAll(/(\d{10}) 00000 n/g)].map(m => Number(m[1]));
-    offsets.forEach((offset, i) => assert.ok(pdf.slice(offset).startsWith(`${i + 1} 0 obj`)));
-    const stream = pdf.match(/\/Length (\d+) >>\nstream\n([\s\S]*?)endstream/);
-    assert.equal(Number(stream[1]), new TextEncoder().encode(stream[2]).length);
-  }
+test('journal validation rejects missing fields, invalid categories and oversized text', () => {
+  const valid = { title: 'Jurnal kelas hukum', author: 'Penulis', category: 'Hukum Perdata', abstract: 'Ringkasan karya yang cukup panjang.', kind: 'text', content: 'Isi karya tulis yang cukup panjang.' };
+  assert.doesNotThrow(() => validateJournal(valid));
+  assert.throws(() => validateJournal({ ...valid, title: '' }), /Judul/);
+  assert.throws(() => validateJournal({ ...valid, category: 'invalid' }), /kategori/);
+  assert.throws(() => validateJournal({ ...valid, content: '漢'.repeat(40000) }), /100 KB/);
+});
+test('file validation checks format, signature, empty and oversized uploads', async () => {
+  await assert.doesNotReject(() => validateFile(new File(['%PDF-1.4\n'], 'journal.pdf', { type: 'application/pdf' }), 'pdf'));
+  await assert.rejects(() => validateFile(new File(['fake'], 'journal.pdf', { type: 'application/pdf' }), 'pdf'), /tidak valid/);
+  await assert.rejects(() => validateFile(new File(['%PDF-'], 'journal.exe'), 'pdf'), /Format/);
+  await assert.rejects(() => validateFile(new File([], 'journal.pdf'), 'pdf'), /kosong/);
+  await assert.rejects(() => validateFile(new File([new Uint8Array(MAX_FILE_SIZE + 1)], 'journal.pdf'), 'pdf'), /10 MB/);
+  await assert.doesNotReject(() => validateFile(new File([new Uint8Array([80, 75, 3, 4, 0])], 'journal.docx'), 'docx'));
+});
+test('errors show actionable messages rather than Firebase internals', () => {
+  assert.match(friendlyError({ code: 'auth/invalid-credential' }), /Email atau password/);
+  assert.match(friendlyError({ code: 'storage/unauthorized' }), /tidak dapat diakses/);
+  assert.ok(!friendlyError({ code: 'unknown/internal', message: 'secret internals' }).includes('secret'));
 });
