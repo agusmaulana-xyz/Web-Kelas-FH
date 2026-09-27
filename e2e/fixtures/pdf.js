@@ -13,7 +13,7 @@ export function createJournalPdf(journal) {
   let stream = '0.50 0 0.13 rg\n50 780 495 3 re f\n';
   let y = 752;
   const write = (text, size = 12, font = 'F1', gap = 20) => { stream += `BT /${font} ${size} Tf 0.12 0.12 0.12 rg 50 ${y} Td (${clean(text)}) Tj ET\n`; y -= gap; };
-  write('JUSTITIA / FAKULTAS HUKUM', 12, 'F2', 37);
+  write('JUSTICE AFTER DARK / FAKULTAS HUKUM', 12, 'F2', 37);
   write(`${journal.category.toUpperCase()} | NASKAH DEMONSTRASI`, 10, 'F1', 30);
   for (const line of wrap(journal.title, 48)) write(line, 20, 'F2', 26);
   y -= 12;
@@ -25,7 +25,7 @@ export function createJournalPdf(journal) {
   for (const line of wrap('Pertanyaan untuk diskusi kelas: isu apa yang perlu dikaji lebih lanjut, sumber primer apa yang dibutuhkan, dan bagaimana menyusun pertanyaan penelitian yang dapat dipertanggungjawabkan?', 77)) write(line, 11, 'F1', 19);
   y = 95;
   write('Dokumen contoh untuk demonstrasi website. Bukan publikasi ilmiah atau nasihat hukum.', 9, 'F1', 20);
-  write('Justitia - Ruang gagasan dan kajian hukum                                      Halaman 1 / 1', 9);
+  write('Justice After Dark - Ruang gagasan dan kajian hukum                                      Halaman 1 / 1', 9);
   const objects = ['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [3 0 R] /Count 1 >>', '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>', '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>', `<< /Length ${stream.length} >>\nstream\n${stream}endstream`];
   let pdf = '%PDF-1.4\n'; const offsets = [0];
   objects.forEach((object, i) => { offsets.push(pdf.length); pdf += `${i + 1} 0 obj\n${object}\nendobj\n`; });

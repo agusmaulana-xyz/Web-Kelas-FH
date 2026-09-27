@@ -29,8 +29,7 @@ test('file validation checks format, signature, empty and oversized uploads', as
   await assert.rejects(() => validateFile(new File([new Uint8Array(MAX_FILE_SIZE + 1)], 'journal.pdf'), 'pdf'), /10 MB/);
   await assert.doesNotReject(() => validateFile(new File([new Uint8Array([80, 75, 3, 4, 0])], 'journal.docx'), 'docx'));
 });
-test('errors show actionable messages rather than Firebase internals', () => {
-  assert.match(friendlyError({ code: 'auth/invalid-credential' }), /Email atau password/);
-  assert.match(friendlyError({ code: 'storage/unauthorized' }), /tidak dapat diakses/);
+test('unknown errors do not expose internal details', () => {
+  assert.match(friendlyError(new Error('Permintaan belum berhasil.')), /Permintaan belum berhasil/);
   assert.ok(!friendlyError({ code: 'unknown/internal', message: 'secret internals' }).includes('secret'));
 });

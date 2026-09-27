@@ -6,9 +6,8 @@ playwright-report/
 .env.local
 .env.*.local
 dist/
-.vercel/
-.firebase/
 storage.cors.json
 *-debug.log
 *-debug.*.log
 artifacts/
+data/

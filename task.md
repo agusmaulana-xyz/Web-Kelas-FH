@@ -55,7 +55,7 @@ Website harus mencerminkan wibawa, keadilan, dan tradisi hukum yang berakar dari
 
 ## 4. Technical Stack Recommendations
 *   **Frontend:** HTML5, CSS3 (atau TailwindCSS untuk efisiensi utilitas warna maroon/hitam), Vanilla JavaScript (atau React.js / Next.js untuk skalabilitas).
-*   **State Management/Auth:** JWT (JSON Web Tokens) atau Firebase Auth / NextAuth.js untuk proteksi halaman jurnal.
+*   **State Management/Auth:** Sesi lokal di server Node.js untuk proteksi halaman jurnal. Data akun disimpan di file JSON lokal.
 *   **Animations:** Framer Motion atau AOS (Animate on Scroll) untuk transisi halus pada ornamen Romawi dan bagan organisasi.
 
 ---

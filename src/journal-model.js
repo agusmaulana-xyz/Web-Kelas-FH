@@ -26,29 +26,7 @@ export async function validateFile(file, kind) {
   if (!valid) throw new Error('Berkas tidak valid. Pilih dokumen PDF atau DOCX asli.');
 }
 export function friendlyError(error) {
-  const messages = {
-    'auth/invalid-credential': 'Email atau password tidak sesuai.',
-    'auth/user-not-found': 'Email atau password tidak sesuai.',
-    'auth/wrong-password': 'Email atau password tidak sesuai.',
-    'auth/invalid-email': 'Format email belum valid.',
-    'auth/email-already-in-use': 'Email sudah terdaftar. Silakan masuk.',
-    'auth/weak-password': 'Password belum memenuhi persyaratan. Gunakan minimal 8 karakter.',
-    'auth/password-does-not-meet-requirements': 'Password belum memenuhi kebijakan keamanan akun.',
-    'auth/too-many-requests': 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.',
-    'auth/popup-closed-by-user': 'Login Google dibatalkan. Silakan coba lagi.',
-    'auth/cancelled-popup-request': 'Permintaan login dibatalkan. Silakan coba lagi.',
-    'auth/popup-blocked': 'Izinkan pop-up browser untuk masuk dengan Google.',
-    'auth/unauthorized-domain': 'Login belum tersedia pada domain ini. Hubungi pengelola.',
-    'auth/operation-not-allowed': 'Metode login ini belum tersedia. Hubungi pengelola.',
-    'auth/network-request-failed': 'Koneksi terputus. Periksa internet lalu coba lagi.',
-    'auth/user-disabled': 'Akun ini dinonaktifkan. Hubungi pengelola.',
-    'permission-denied': 'Akses jurnal ditolak. Silakan masuk kembali atau hubungi pengelola.',
-    'unavailable': 'Layanan jurnal belum dapat dihubungi. Coba lagi nanti.',
-    'storage/unauthorized': 'Berkas tidak dapat diakses. Silakan masuk kembali.',
-    'storage/object-not-found': 'Berkas jurnal tidak ditemukan.',
-    'storage/retry-limit-exceeded': 'Unggahan terhenti. Periksa koneksi lalu coba lagi.',
-    'storage/quota-exceeded': 'Penyimpanan penuh. Hubungi pengelola.',
-    'storage/canceled': 'Unggahan dibatalkan.'
-  };
-  return messages[error?.code] || (error?.code ? 'Proses belum berhasil. Coba lagi atau hubungi pengelola.' : error?.message || 'Terjadi kesalahan. Silakan coba lagi.');
+  return error?.code
+    ? 'Proses belum berhasil. Coba lagi atau hubungi pengelola.'
+    : error?.message || 'Terjadi kesalahan. Silakan coba lagi.';
 }

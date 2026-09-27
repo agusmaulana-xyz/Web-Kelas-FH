@@ -27,7 +27,7 @@ export const members = [
     initials,
     photo: '',
     linkedin: '',
-    bio: 'Bagian dari keluarga Justitia yang turut belajar, berbagi gagasan, dan berkontribusi dalam kegiatan kelas.'
+    bio: 'Bagian dari keluarga Justice After Dark yang turut belajar, berbagi gagasan, dan berkontribusi dalam kegiatan kelas.'
   }))
 ];
 
